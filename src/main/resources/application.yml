@@ -1,3 +1,5 @@
 spring:
   application:
     name: order-management-microservice
+  config:
+    import: configserver:http://localhost:8888
