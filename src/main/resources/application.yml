@@ -3,3 +3,29 @@ spring:
     name: order-management-microservice
   config:
     import: configserver:http://localhost:8888
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      port : 9005
+  datasource:
+    url: jdbc:h2:file:./mydatabase
+    username: sa
+    password: ''
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
+springdoc:
+  pathsToMatch: /api/**
+  swagger-ui:
+    path: /api-docs
