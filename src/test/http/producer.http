@@ -1,0 +1,4 @@
+### Send message
+POST http://localhost:8084/producer/send-simple-message
+
+test message
