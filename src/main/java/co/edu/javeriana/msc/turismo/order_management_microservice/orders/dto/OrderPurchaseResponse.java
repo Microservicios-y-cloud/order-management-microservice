@@ -10,7 +10,6 @@ public record OrderPurchaseResponse(
         LocalDate creationDate,
         Estado estado,
         Long createdBy,
-        Long payId,
         List <OrderItemResponse> itemsDTO
 ) {
 }

@@ -22,7 +22,7 @@ public class OrderItem {
     @Column(nullable = false, updatable = false)
     private Long serviceId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idOrderPurchase", referencedColumnName = "idOrderPurchase")
     private OrderPurchase orderPurchase;
 }
