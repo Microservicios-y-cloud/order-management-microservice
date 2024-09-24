@@ -22,7 +22,6 @@ public class OrderPurchaseMapper {
         orderPurchase.setCreationDate(request.creationDate());
         orderPurchase.setEstado(request.estado());
         orderPurchase.setCreatedBy(request.createdBy());
-        orderPurchase.setPayId(request.payId());
         orderPurchase.setItems(request.itemsDTO().stream() // Convierte la lista de OrderItemRequest a OrderItem
                 .map(OrderItemMapper::toOrderItem)
                 .collect(Collectors.toList())
@@ -41,7 +40,6 @@ public class OrderPurchaseMapper {
                 orderPurchase.getCreationDate(),
                 orderPurchase.getEstado(),
                 orderPurchase.getCreatedBy(),
-                orderPurchase.getPayId(),
                 orderPurchase.getItems().stream() // Convierte la lista de OrderItem a OrderItemResponse
                         .map(OrderItemMapper::toOrderItemResponse)
                         .collect(Collectors.toList())

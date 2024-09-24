@@ -15,8 +15,6 @@ public record OrderPurchaseRequest(
         Estado estado,
         @NotNull(message = "The user id of the purchase order is required")
         Long createdBy,
-        @NotNull(message = "The pay id of the question is required")
-        Long payId,
         @NotNull(message = "The items of the purchase order is required")
         List<OrderItemRequest> itemsDTO
 ) {

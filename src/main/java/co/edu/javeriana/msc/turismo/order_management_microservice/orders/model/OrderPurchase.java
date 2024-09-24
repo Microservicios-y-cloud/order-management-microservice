@@ -30,10 +30,8 @@ public class OrderPurchase {
     @Column(nullable = false, updatable = false)
     private Long createdBy;
 
-    @Column(nullable = false, updatable = false)
-    private Long payId;
 
-    @OneToMany(mappedBy = "orderPurchase", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "orderPurchase", cascade = CascadeType.ALL)
     private List <OrderItem> items;
 
 
