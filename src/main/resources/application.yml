@@ -3,6 +3,10 @@ spring:
     name: order-management-microservice
   config:
     import: configserver:http://localhost:8888
+  data:
+      mongodb:
+        uri: mongodb+srv://kevinevelasco:kevinevelasco@msc-cluster.gh4kp.mongodb.net/?retryWrites=true&w=majority&appName=msc-cluster
+        database: cart
   h2:
     console:
       enabled: true

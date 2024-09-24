@@ -2,6 +2,7 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.cart.controll
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.dtos.CartRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.dtos.CartResponse;
+import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.CartItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.services.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/cart")
 @RequiredArgsConstructor
-public class CartControler {
+public class CartController {
     private final CartService cartService;
 
 
@@ -37,8 +38,8 @@ public class CartControler {
 
     //add cartItem to cart
     @PostMapping("/{id}/cartItem")
-    public ResponseEntity<String> addCartItem(@PathVariable String id, @RequestBody @Valid CartRequest cartRequest) {
-        return ResponseEntity.ok(cartService.addCartItem(id, cartRequest));
+    public ResponseEntity<String> addCartItem(@PathVariable String id, @RequestBody @Valid CartItem cartItem) {
+        return ResponseEntity.ok(cartService.addCartItem(id, cartItem));
     }
 
     //delete cartItem from cart

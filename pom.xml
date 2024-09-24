@@ -125,6 +125,12 @@
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
 
+		<!-- mongo-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
     </dependencies>
 	<dependencyManagement>
 		<dependencies>

@@ -2,3 +2,28 @@
 POST http://localhost:8084/producer/send-simple-message
 
 test message
+
+###
+POST http://localhost:8084/cart
+Content-Type: application/json
+
+{
+  "createdBy": "50f60693-b5a9-4f9f-90fc-9c710cdcd1b0",
+  "cartItems": [
+    {
+      "serviceId": "prueba",
+      "quantity": 2,
+      "subtotal": 580000
+    }
+  ]
+}
+
+###add item to cart
+POST http://localhost:8084/cart/66f33494b6a0cf35f0e94073/cartItem
+Content-Type: application/json
+
+{
+  "serviceId": "prueba2",
+  "quantity": 1,
+  "subtotal": 219000
+}
