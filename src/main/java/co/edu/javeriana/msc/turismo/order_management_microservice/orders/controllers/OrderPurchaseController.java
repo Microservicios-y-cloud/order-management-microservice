@@ -25,7 +25,7 @@ public class OrderPurchaseController {
         // Obtener una orden por ID
         @GetMapping("/{order-id}")
         public ResponseEntity<OrderPurchaseResponse> getOrder(
-                @PathVariable("order-id") Long orderId) {
+                @PathVariable("order-id") String orderId) {
             return ResponseEntity.ok(orderPurchaseService.findById(orderId));
         }
     
@@ -37,16 +37,16 @@ public class OrderPurchaseController {
     
         // Crear una nueva orden
         @PostMapping
-        public ResponseEntity<Long> createOrder(
+        public ResponseEntity<String> createOrder(
                 @Valid @RequestBody OrderPurchaseRequest orderRequest) {
-            Long createdOrderId = orderPurchaseService.createOrderPurchase(orderRequest);
+            String createdOrderId = orderPurchaseService.createOrderPurchase(orderRequest);
             return new ResponseEntity<>(createdOrderId, HttpStatus.CREATED);
         }
     
         // Actualizar el estado de una orden existente
         @PutMapping("/{order-id}")
         public ResponseEntity<OrderPurchaseResponse> updateOrderEstado(
-                @PathVariable("order-id") Long orderId,
+                @PathVariable("order-id") String orderId,
                 @Valid @RequestBody OrderPurchaseRequest updateRequest) {
             OrderPurchaseResponse updatedOrder = orderPurchaseService.updateOrderPurchaseEstado(orderId, updateRequest);
             return ResponseEntity.ok(updatedOrder);
@@ -54,7 +54,7 @@ public class OrderPurchaseController {
     
         // Eliminar una orden por ID
         @DeleteMapping("/{order-id}")
-        public ResponseEntity<Void> deleteOrder(@PathVariable("order-id") Long orderId) {
+        public ResponseEntity<Void> deleteOrder(@PathVariable("order-id") String orderId) {
             orderPurchaseService.deleteOrderPurchase(orderId);
             return ResponseEntity.noContent().build();  // Devuelve 204 No Content
         }

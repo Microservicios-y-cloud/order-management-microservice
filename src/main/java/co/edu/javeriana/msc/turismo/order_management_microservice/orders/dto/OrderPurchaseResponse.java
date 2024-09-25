@@ -1,15 +1,16 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;
 
 public record OrderPurchaseResponse(
-        Long id,
-        LocalDate creationDate,
+        String id,
+        LocalDateTime creationDate,
         Estado estado,
-        Long createdBy,
-        List <OrderItemResponse> itemsDTO
+        String createdBy,
+        List <OrderItem> orderItems
 ) {
 }

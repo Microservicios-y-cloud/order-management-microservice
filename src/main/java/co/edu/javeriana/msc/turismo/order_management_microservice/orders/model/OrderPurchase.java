@@ -1,13 +1,14 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
 
@@ -15,34 +16,28 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@SuperBuilder
+@Builder
+@Document
 
 public class OrderPurchase {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idOrderPurchase;
-    private LocalDate creationDate;
-    private Estado estado;
-
+    private String idOrderPurchase;
+    @CreatedDate
+    private LocalDateTime creationDate;
     @CreatedBy
-    @Column(nullable = false, updatable = false)
-    private Long createdBy;
+    private String createdBy;
+    private Estado estado;
+    private List <OrderItem> orderItems;
 
-
-    @OneToMany(mappedBy = "orderPurchase", cascade = CascadeType.ALL)
-    private List <OrderItem> items;
-
-
-    public OrderPurchase(LocalDate creationDate, Estado estado, Long createdBy) {
+    public OrderPurchase(LocalDateTime creationDate, Estado estado, String createdBy) {
         this.creationDate = creationDate;
         this.estado = estado;
         this.createdBy = createdBy;
-        this.items = new ArrayList<>();
+        this.orderItems = new ArrayList<>();
     }
 
     public Double getTotal() {
-        return items.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        return orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
     }
 }

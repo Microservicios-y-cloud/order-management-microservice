@@ -2,8 +2,6 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.orders.mapper
 
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderPurchase;
@@ -22,10 +20,7 @@ public class OrderPurchaseMapper {
         orderPurchase.setCreationDate(request.creationDate());
         orderPurchase.setEstado(request.estado());
         orderPurchase.setCreatedBy(request.createdBy());
-        orderPurchase.setItems(request.itemsDTO().stream() // Convierte la lista de OrderItemRequest a OrderItem
-                .map(OrderItemMapper::toOrderItem)
-                .collect(Collectors.toList())
-        );
+        orderPurchase.setOrderItems(request.orderItems());
 
         return orderPurchase;
     }
@@ -40,9 +35,7 @@ public class OrderPurchaseMapper {
                 orderPurchase.getCreationDate(),
                 orderPurchase.getEstado(),
                 orderPurchase.getCreatedBy(),
-                orderPurchase.getItems().stream() // Convierte la lista de OrderItem a OrderItemResponse
-                        .map(OrderItemMapper::toOrderItemResponse)
-                        .collect(Collectors.toList())
+                orderPurchase.getOrderItems()
         );
     }
 }

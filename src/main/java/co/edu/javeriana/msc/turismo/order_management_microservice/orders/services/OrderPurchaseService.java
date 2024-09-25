@@ -22,12 +22,12 @@ public class OrderPurchaseService {
         this.repository = repository;
     }
 
-    public Long createOrderPurchase(@Valid OrderPurchaseRequest request) {
+    public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
         var orderPurchase = OrderPurchaseMapper.toOrderPurchase(request);
         return repository.save(orderPurchase).getIdOrderPurchase();
     }
 
-    public OrderPurchaseResponse findById(Long orderPurchaseId) {
+    public OrderPurchaseResponse findById(String orderPurchaseId) {
         return repository.findById(orderPurchaseId)
                 .map(OrderPurchaseMapper::toOrderPurchaseResponse)
                 .orElseThrow(() -> new EntityNotFoundException("OrderPurchase not found, with id: " + orderPurchaseId));
@@ -40,7 +40,7 @@ public class OrderPurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public OrderPurchaseResponse updateOrderPurchaseEstado(Long orderPurchaseId, OrderPurchaseRequest orderPurchaseRequest) {
+    public OrderPurchaseResponse updateOrderPurchaseEstado(String orderPurchaseId, OrderPurchaseRequest orderPurchaseRequest) {
         var orderPurchase = repository.findById(orderPurchaseId)
                 .orElseThrow(() -> new EntityNotFoundException("OrderPurchase not found with id: " + orderPurchaseId));
 
@@ -54,7 +54,7 @@ public class OrderPurchaseService {
         return OrderPurchaseMapper.toOrderPurchaseResponse(updatedOrderPurchase);
     }
 
-    public void deleteOrderPurchase(Long orderPurchaseId) {
+    public void deleteOrderPurchase(String orderPurchaseId) {
         repository.deleteById(orderPurchaseId);
     }
 }

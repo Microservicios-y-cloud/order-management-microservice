@@ -1,28 +1,21 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.model;
 
-import jakarta.persistence.*;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@SuperBuilder
-
+@Builder
+@Validated
 public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @NotNull
     private Double subtotal;
+    @NotNull
     private Integer quantity;
-
-    @Column(nullable = false, updatable = false)
+    @NotNull
     private Long serviceId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idOrderPurchase", referencedColumnName = "idOrderPurchase")
-    private OrderPurchase orderPurchase;
 }
