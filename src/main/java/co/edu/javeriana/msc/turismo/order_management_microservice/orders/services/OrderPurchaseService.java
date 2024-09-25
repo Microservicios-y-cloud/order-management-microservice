@@ -45,7 +45,7 @@ public class OrderPurchaseService {
                 .orElseThrow(() -> new EntityNotFoundException("OrderPurchase not found with id: " + orderPurchaseId));
 
         // Actualizar solo el estado de la compra
-        orderPurchase.setEstado(orderPurchaseRequest.estado());
+        orderPurchase.setStatus(orderPurchaseRequest.status());
 
         // Usar merge para asegurarnos de que la entidad esté gestionada
         var updatedOrderPurchase = repository.save(orderPurchase);

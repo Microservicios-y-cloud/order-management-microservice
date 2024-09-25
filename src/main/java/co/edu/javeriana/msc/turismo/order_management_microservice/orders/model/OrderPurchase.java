@@ -9,7 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class OrderPurchase {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idOrderPurchase;
     private LocalDate creationDate;
-    private Estado estado;
+    private Status status;
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
@@ -35,9 +35,9 @@ public class OrderPurchase {
     private List <OrderItem> items;
 
 
-    public OrderPurchase(LocalDate creationDate, Estado estado, Long createdBy) {
+    public OrderPurchase(LocalDate creationDate, Status status, Long createdBy) {
         this.creationDate = creationDate;
-        this.estado = estado;
+        this.status = status;
         this.createdBy = createdBy;
         this.items = new ArrayList<>();
     }

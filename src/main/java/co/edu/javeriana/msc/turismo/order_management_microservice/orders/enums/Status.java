@@ -1,6 +1,6 @@
-package co.edu.javeriana.msc.turismo.order_management_microservice.enums;
+package co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums;
 
-public enum Estado{
+public enum Status {
     POR_ACEPTAR(1),
     ACEPTADA(2),
     PAGADA(3),
@@ -9,7 +9,7 @@ public enum Estado{
 
     private final int codigo;
 
-    Estado(int codigo) {
+    Status(int codigo) {
         this.codigo = codigo;
     }
 

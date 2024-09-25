@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 import java.time.LocalDate;
 @Component
@@ -26,7 +26,7 @@ public class DbInitializer implements CommandLineRunner {
         for (int i = 0; i < 10; i++) {
             OrderPurchase orderPurchase = OrderPurchase.builder()
                     .creationDate(LocalDate.now())
-                    .estado(faker.options().option(Estado.class))
+                    .status(faker.options().option(Status.class))
                     .createdBy(faker.number().randomNumber())
                     .build();
             orderPurchaseRepository.save(orderPurchase);

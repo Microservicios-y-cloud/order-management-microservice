@@ -3,12 +3,12 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 public record OrderPurchaseResponse(
         Long id,
         LocalDate creationDate,
-        Estado estado,
+        Status status,
         Long createdBy,
         List <OrderItemResponse> itemsDTO
 ) {
