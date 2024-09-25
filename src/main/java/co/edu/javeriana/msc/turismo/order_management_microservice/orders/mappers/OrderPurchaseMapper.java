@@ -18,7 +18,7 @@ public class OrderPurchaseMapper {
         OrderPurchase orderPurchase = new OrderPurchase();
         orderPurchase.setIdOrderPurchase(request.id());
         orderPurchase.setCreationDate(request.creationDate());
-        orderPurchase.setEstado(request.estado());
+        orderPurchase.setStatus(request.status());
         orderPurchase.setCreatedBy(request.createdBy());
         orderPurchase.setOrderItems(request.orderItems());
 
@@ -33,7 +33,7 @@ public class OrderPurchaseMapper {
         return new OrderPurchaseResponse(
                 orderPurchase.getIdOrderPurchase(),
                 orderPurchase.getCreationDate(),
-                orderPurchase.getEstado(),
+                orderPurchase.getStatus(),
                 orderPurchase.getCreatedBy(),
                 orderPurchase.getOrderItems()
         );

@@ -10,7 +10,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.enums.Estado;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 @Getter
 @Setter
@@ -27,12 +27,12 @@ public class OrderPurchase {
     private LocalDateTime creationDate;
     @CreatedBy
     private String createdBy;
-    private Estado estado;
+    private Status status;
     private List <OrderItem> orderItems;
 
-    public OrderPurchase(LocalDateTime creationDate, Estado estado, String createdBy) {
+    public OrderPurchase(LocalDateTime creationDate, Status status, String createdBy) {
         this.creationDate = creationDate;
-        this.estado = estado;
+        this.status = status;
         this.createdBy = createdBy;
         this.orderItems = new ArrayList<>();
     }

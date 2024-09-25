@@ -1,6 +1,6 @@
-package co.edu.javeriana.msc.turismo.order_management_microservice.services;
+package co.edu.javeriana.msc.turismo.order_management_microservice.queue.services;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.dtos.MyMessageDTO;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.MyMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;

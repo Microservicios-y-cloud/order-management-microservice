@@ -1,7 +1,7 @@
-package co.edu.javeriana.msc.turismo.order_management_microservice.controllers;
+package co.edu.javeriana.msc.turismo.order_management_microservice.queue.controllers;
 
-import co.edu.javeriana.msc.turismo.order_management_microservice.dtos.MyMessageDTO;
-import co.edu.javeriana.msc.turismo.order_management_microservice.services.MessageQueueService;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.MyMessageDTO;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

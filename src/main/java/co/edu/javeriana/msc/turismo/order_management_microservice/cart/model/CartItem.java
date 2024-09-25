@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class CartItem {
     @NotNull
-    private String serviceId;
+    private Long serviceId;
     @NotNull
     private Integer quantity;
     @NotNull
