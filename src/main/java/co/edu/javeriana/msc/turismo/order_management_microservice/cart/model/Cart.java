@@ -1,5 +1,6 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.cart.model;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -23,7 +24,7 @@ public class Cart {
 
     private LocalDateTime lastUpdate;
     @CreatedBy
-    private String createdBy;
+    private Customer createdBy;
 
     private List<CartItem> cartItems;
 }

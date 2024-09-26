@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -26,11 +27,11 @@ public class OrderPurchase {
     @CreatedDate
     private LocalDateTime creationDate;
     @CreatedBy
-    private String createdBy;
+    private Customer createdBy;
     private Status status;
     private List <OrderItem> orderItems;
 
-    public OrderPurchase(LocalDateTime creationDate, Status status, String createdBy) {
+    public OrderPurchase(LocalDateTime creationDate, Status status, Customer createdBy) {
         this.creationDate = creationDate;
         this.status = status;
         this.createdBy = createdBy;

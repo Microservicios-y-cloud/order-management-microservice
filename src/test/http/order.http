@@ -3,7 +3,14 @@ Content-Type: application/json
 
 {
   "creationDate": "2021-08-10T00:00:00.000Z",
-  "createdBy": "50f60693-b5a9-4f9f-90fc-9c710cdcd1b0",
+  "createdBy": {
+    "id": "50f60693-b5a9-4f9f-90fc-9c710cdcd1b0",
+    "userType": "CUSTOMER",
+    "username": "customer1",
+    "firstName": "customer1",
+    "lastName": "customer1",
+    "email": "customer1@mail.com"
+  },
   "status": "RECHAZADA",
   "orderItems": [
     {

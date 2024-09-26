@@ -1,5 +1,6 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public record OrderPurchaseRequest(
         @NotNull(message = "The state of the purchase order is required")
         Status status,
         @NotNull(message = "The user id of the purchase order is required")
-        String createdBy,
+        Customer createdBy,
         @NotNull(message = "The items of the purchase order are required")
         List<OrderItem> orderItems
 ) {

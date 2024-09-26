@@ -8,10 +8,17 @@ POST http://localhost:8084/cart
 Content-Type: application/json
 
 {
-  "createdBy": "50f60693-b5a9-4f9f-90fc-9c710cdcd1b0",
+  "createdBy": {
+    "id": "50f60693-b5a9-4f9f-90fc-9c710cdcd1b0",
+    "userType": "CUSTOMER",
+    "username": "customer1",
+    "firstName": "customer1",
+    "lastName": "customer1",
+    "email": "customer1@mail.com"
+  },
   "cartItems": [
     {
-      "serviceId": "prueba",
+      "serviceId": 1,
       "quantity": 2,
       "subtotal": 580000
     }
@@ -19,11 +26,11 @@ Content-Type: application/json
 }
 
 ###add item to cart
-POST http://localhost:8084/cart/66f33494b6a0cf35f0e94073/cartItem
+POST http://localhost:8084/cart/66f4dc620452a74130535c01/cartItem
 Content-Type: application/json
 
 {
-  "serviceId": "prueba2",
+  "serviceId": 2,
   "quantity": 1,
-  "subtotal": 219000
+  "subtotal": 258000
 }

@@ -65,7 +65,7 @@ public class CartService {
     }
 
     private void mergerCart(Cart cart, @Valid CartRequest cartRequest) {
-        if (StringUtils.isNotBlank(cartRequest.createdBy())) {
+        if (StringUtils.isNotBlank(cartRequest.createdBy().getId())) {
             cart.setCreatedBy(cartRequest.createdBy());
         }
         if (cartRequest.cartItems() != null && !cartRequest.cartItems().isEmpty()) {
