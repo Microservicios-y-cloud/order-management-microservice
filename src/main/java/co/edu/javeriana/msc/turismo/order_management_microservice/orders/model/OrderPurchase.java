@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 @Getter
@@ -28,12 +29,13 @@ public class OrderPurchase {
     private LocalDateTime creationDate;
     @CreatedBy
     private Customer createdBy;
-    private Status status;
+    private Status orderStatus;
+    private PaymentStatus paymentStatus;
     private List <OrderItem> orderItems;
 
     public OrderPurchase(LocalDateTime creationDate, Status status, Customer createdBy) {
         this.creationDate = creationDate;
-        this.status = status;
+        this.orderStatus = status;
         this.createdBy = createdBy;
         this.orderItems = new ArrayList<>();
     }
