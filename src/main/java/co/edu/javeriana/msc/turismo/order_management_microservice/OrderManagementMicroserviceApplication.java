@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@Import(value={H2ConsoleAutoConfiguration.class})
 public class OrderManagementMicroserviceApplication {
 
 	public static void main(String[] args) {
