@@ -14,6 +14,7 @@ public record OrderPurchaseResponse(
         Status orderstatus,
         PaymentStatus paymentStatus,
         Customer createdBy,
-        List <OrderItem> orderItems
+        List <OrderItem> orderItems,
+        Double amount
 ) {
 }

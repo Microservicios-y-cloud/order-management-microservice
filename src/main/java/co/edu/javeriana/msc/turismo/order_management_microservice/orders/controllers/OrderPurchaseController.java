@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.services.OrderPurchaseService;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
+
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.UserTransactionRequest;
 
 import java.util.List;
 
@@ -19,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderPurchaseController {
-        
+
+        private final MessageQueueService messageQueueService;
+
         private final OrderPurchaseService orderPurchaseService;
+        
     
         // Obtener una orden por ID
         @GetMapping("/{order-id}")
@@ -38,8 +44,13 @@ public class OrderPurchaseController {
         // Crear una nueva orden
         @PostMapping
         public ResponseEntity<String> createOrder(
-                @Valid @RequestBody OrderPurchaseRequest orderRequest) {
+            @Valid @RequestBody OrderPurchaseRequest orderRequest) {
             String createdOrderId = orderPurchaseService.createOrderPurchase(orderRequest);
+            //Envío de mensaje de order a la cola
+            messageQueueService.sendPaymentOrder(new UserTransactionRequest(orderRequest.id(), orderRequest.createdBy().getId(),
+                                                                             orderRequest.amount(), orderRequest.orderStatus(),
+                                                                             orderRequest.paymentStatus()));
+            log.info("orderId sent: {}", createdOrderId);
             return new ResponseEntity<>(createdOrderId, HttpStatus.CREATED);
         }
     

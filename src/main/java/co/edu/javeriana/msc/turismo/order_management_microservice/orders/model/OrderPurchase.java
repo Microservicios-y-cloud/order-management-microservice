@@ -32,15 +32,12 @@ public class OrderPurchase {
     private Status orderStatus;
     private PaymentStatus paymentStatus;
     private List <OrderItem> orderItems;
+    private Double amount;
 
     public OrderPurchase(LocalDateTime creationDate, Status status, Customer createdBy) {
         this.creationDate = creationDate;
         this.orderStatus = status;
         this.createdBy = createdBy;
         this.orderItems = new ArrayList<>();
-    }
-
-    public Double getTotal() {
-        return orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
     }
 }

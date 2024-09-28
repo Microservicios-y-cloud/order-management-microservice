@@ -21,6 +21,8 @@ public record OrderPurchaseRequest(
         @NotNull(message = "The user id of the purchase order is required")
         Customer createdBy,
         @NotNull(message = "The items of the purchase order are required")
-        List<OrderItem> orderItems
+        List<OrderItem> orderItems,
+        @NotNull(message = "The total amount of the purchase order is required")
+        Double amount
 ) {
 }

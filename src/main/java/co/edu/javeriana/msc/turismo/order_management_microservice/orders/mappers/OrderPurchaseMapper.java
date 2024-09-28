@@ -22,6 +22,7 @@ public class OrderPurchaseMapper {
         orderPurchase.setPaymentStatus(request.paymentStatus());
         orderPurchase.setCreatedBy(request.createdBy());
         orderPurchase.setOrderItems(request.orderItems());
+        orderPurchase.setAmount(request.amount());
 
         return orderPurchase;
     }
@@ -37,7 +38,8 @@ public class OrderPurchaseMapper {
                 orderPurchase.getOrderStatus(),
                 orderPurchase.getPaymentStatus(),
                 orderPurchase.getCreatedBy(),
-                orderPurchase.getOrderItems()
+                orderPurchase.getOrderItems(),
+                orderPurchase.getAmount()
         );
     }
 }

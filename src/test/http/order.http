@@ -11,13 +11,14 @@ Content-Type: application/json
     "lastName": "customer1",
     "email": "customer1@mail.com"
   },
-  "orderStatus": "RECHAZADA",
-  "paymentStatus": "ACEPTADA",
+  "orderStatus": "POR_ACEPTAR",
+  "paymentStatus": "RECHAZADA",
   "orderItems": [
     {
       "serviceId": 2000,
       "quantity": 7,
       "subtotal": 580000
     }
-  ]
+  ],
+  "amount": 580000.0
 }
