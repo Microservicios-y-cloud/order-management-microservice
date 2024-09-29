@@ -38,6 +38,9 @@ spring:
         sendPaymentOrder-out-0:
         # Name of the queue that will manage the messages
           destination: order-payment-queue
+        receiveStatus-in-0:
+          destination: payment-order-queue
+          group: my-consumer-group
 logging:
   level:
     org:
