@@ -1,6 +1,8 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.services;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.OrderPurchaseMapper;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -13,16 +15,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class OrderPurchaseService {
 
     private final OrderPurchaseRepository repository;
-
-    // Constructor con inyección de dependencias
-    public OrderPurchaseService(OrderPurchaseRepository repository) {
-        this.repository = repository;
-    }
+    private final SuperServiceRepository superServiceRepository;
 
     public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
+        for (var orderItem : request.orderItems()) {
+            if (!superServiceRepository.existsById(orderItem.getServiceId())) {
+                throw new RuntimeException("Service not found");
+            }
+        }
         var orderPurchase = OrderPurchaseMapper.toOrderPurchase(request);
         return repository.save(orderPurchase).getIdOrderPurchase();
     }
@@ -44,6 +48,11 @@ public class OrderPurchaseService {
         var orderPurchase = repository.findById(orderPurchaseId)
                 .orElseThrow(() -> new EntityNotFoundException("OrderPurchase not found with id: " + orderPurchaseId));
 
+        for (var orderItem : orderPurchaseRequest.orderItems()) {
+            if (!superServiceRepository.existsById(orderItem.getServiceId())) {
+                throw new RuntimeException("Service not found");
+            }
+        }
         // Actualizar solo el estado de la compra
         orderPurchase.setOrderStatus(orderPurchaseRequest.orderStatus());
 

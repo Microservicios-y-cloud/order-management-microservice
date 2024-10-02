@@ -26,11 +26,11 @@ Content-Type: application/json
 }
 
 ###add item to cart
-POST http://localhost:8084/cart/66f4dc620452a74130535c01/cartItem
+POST http://localhost:8084/cart/66fc8f52640b2c6e08923c59/cartItem
 Content-Type: application/json
 
 {
-  "serviceId": 2,
+  "serviceId": 88,
   "quantity": 1,
   "subtotal": 258000
 }

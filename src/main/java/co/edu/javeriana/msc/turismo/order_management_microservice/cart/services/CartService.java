@@ -6,6 +6,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.cart.mapper.Ca
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.Cart;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.CartItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.repository.CartRepository;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
@@ -19,8 +20,14 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
+    private final SuperServiceRepository superServiceRepository;
 
     public String createCart(CartRequest cartRequest) {
+        for (CartItem cartItem : cartRequest.cartItems()) {
+            if (!superServiceRepository.existsById(cartItem.getServiceId())) {
+                throw new RuntimeException("Service not found");
+            }
+        }
         var cart = cartRepository.save(cartMapper.toCart(cartRequest));
         return cart.getId();
     }
@@ -29,6 +36,11 @@ public class CartService {
         var cart = cartRepository.findById(cartRequest.id()).orElseThrow(
                 () -> new RuntimeException("Cart not found")
         );
+        for (CartItem cartItem : cartRequest.cartItems()) {
+            if (!superServiceRepository.existsById(cartItem.getServiceId())) {
+                throw new RuntimeException("Service not found");
+            }
+        }
       mergerCart(cart, cartRequest);
         cartRepository.save(cart);
         return cart.getId();
@@ -48,6 +60,9 @@ public class CartService {
         var cart = cartRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cart not found")
         );
+        if (!superServiceRepository.existsById(cartItem.getServiceId())) {
+            throw new RuntimeException("Service not found");
+        }
         cart.getCartItems().add(cartItem);
         cart.setLastUpdate(LocalDateTime.now());
         cartRepository.save(cart);
