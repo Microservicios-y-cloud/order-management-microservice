@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;

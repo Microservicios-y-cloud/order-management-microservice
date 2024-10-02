@@ -3,6 +3,7 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.orders.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import jakarta.persistence.*;
@@ -22,9 +23,8 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.S
 @Document
 
 public class OrderPurchase {
-
     @Id
-    private String idOrderPurchase;
+    private String id;
     @CreatedDate
     private LocalDateTime creationDate;
     @CreatedBy

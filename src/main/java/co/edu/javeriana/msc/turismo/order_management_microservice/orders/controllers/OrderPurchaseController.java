@@ -23,11 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OrderPurchaseController {
 
-        private final MessageQueueService messageQueueService;
-
         private final OrderPurchaseService orderPurchaseService;
-        
-    
         // Obtener una orden por ID
         @GetMapping("/{order-id}")
         public ResponseEntity<OrderPurchaseResponse> getOrder(
@@ -46,11 +42,7 @@ public class OrderPurchaseController {
         public ResponseEntity<String> createOrder(
             @Valid @RequestBody OrderPurchaseRequest orderRequest) {
             String createdOrderId = orderPurchaseService.createOrderPurchase(orderRequest);
-            //Envío de mensaje de order a la cola
-            messageQueueService.sendPaymentOrder(new UserTransactionRequest(orderRequest.id(), orderRequest.createdBy().getId(),
-                                                                             orderRequest.amount(), orderRequest.orderStatus(),
-                                                                             orderRequest.paymentStatus()));
-            log.info("orderId sent: {}", createdOrderId);
+            log.info("Order created with ID: {}", createdOrderId);
             return new ResponseEntity<>(createdOrderId, HttpStatus.CREATED);
         }
     

@@ -12,7 +12,7 @@ spring:
   # Message queue
   cloud:
     function:
-      definition: receiveMessage;receiveServiceType;receiveLocation
+      definition: receiveMessage;receiveStatus
     stream:
       kafka:
         binder:

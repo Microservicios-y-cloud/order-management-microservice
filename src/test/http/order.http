@@ -15,10 +15,10 @@ Content-Type: application/json
   "paymentStatus": "RECHAZADA",
   "orderItems": [
     {
-      "serviceId": 2000,
+      "serviceId": 1,
       "quantity": 7,
-      "subtotal": 580000
+      "subtotal": 580001
     }
   ],
-  "amount": 580000.0
+  "amount": 580001.0
 }

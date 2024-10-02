@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class UserTransactionRequest  implements Serializable{
+public class UserTransactionRequest implements Serializable{
     private String orderId;
     private String userId;
     private Double amount;
