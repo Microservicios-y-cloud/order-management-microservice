@@ -37,6 +37,11 @@ public class CartController {
         return ResponseEntity.ok(cartService.getCart(id));
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<CartResponse> getCartByUser(@PathVariable String userId) {
+        return ResponseEntity.ok(cartService.getCartByUser(userId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCart(@PathVariable String id) {
         cartService.deleteCart(id);

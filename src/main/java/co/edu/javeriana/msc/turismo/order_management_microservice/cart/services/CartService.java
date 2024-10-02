@@ -125,4 +125,10 @@ public class CartService {
                 cartItem.getServiceId()
         );
     }
+
+    public CartResponse getCartByUser(String userId) {
+        return cartRepository.findByCreatedBy_Id(userId)
+                .map(cartMapper::toCartResponse)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+    }
 }

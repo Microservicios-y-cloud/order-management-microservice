@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface CartRepository extends MongoRepository<Cart, String> {
     Optional<Cart> findByCreatedBy(String createdBy);
+
+    Optional<Cart> findByCreatedBy_Id(String userId);
 }
