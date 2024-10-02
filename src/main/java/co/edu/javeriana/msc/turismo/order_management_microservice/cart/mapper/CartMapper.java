@@ -17,6 +17,7 @@ public class CartMapper {
         return Cart.builder()
                 .id(cartRequest.id())
                 .creationDate(LocalDateTime.now())
+                .lastUpdate(LocalDateTime.now())
                 .createdBy(cartRequest.createdBy())
                 .cartItems(cartRequest.cartItems())
                 .build();
@@ -25,8 +26,8 @@ public class CartMapper {
     public CartResponse toCartResponse(Cart cart) {
         return new CartResponse(
                 cart.getId(),
-                cart.getCreationDate().toString(),
-                cart.getLastUpdate().toString(),
+                cart.getCreationDate(),
+                cart.getLastUpdate(),
                 cart.getCreatedBy(),
                 cart.getCartItems()
         );

@@ -11,6 +11,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.O
 public record OrderPurchaseResponse(
         String id,
         LocalDateTime creationDate,
+        LocalDateTime lastUpdate,
         Status orderstatus,
         PaymentStatus paymentStatus,
         Customer createdBy,

@@ -27,6 +27,7 @@ public class OrderPurchase {
     private String id;
     @CreatedDate
     private LocalDateTime creationDate;
+    private LocalDateTime lastUpdate;
     @CreatedBy
     private Customer createdBy;
     private Status orderStatus;

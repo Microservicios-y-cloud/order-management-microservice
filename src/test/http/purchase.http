@@ -1,0 +1,2 @@
+GET http://localhost:8084/cart/purchase/66fcb135e4e3837bdb23b8ee
+Content-Type: application/json

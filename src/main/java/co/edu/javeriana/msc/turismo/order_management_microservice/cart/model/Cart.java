@@ -23,7 +23,6 @@ public class Cart {
     private LocalDateTime creationDate;
 
     private LocalDateTime lastUpdate;
-    @CreatedBy
     private Customer createdBy;
 
     private List<CartItem> cartItems;

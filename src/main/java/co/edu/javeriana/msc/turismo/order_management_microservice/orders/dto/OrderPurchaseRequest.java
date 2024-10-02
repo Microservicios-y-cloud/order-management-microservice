@@ -16,6 +16,8 @@ public record OrderPurchaseRequest(
         String id,
         @NotNull(message = "The date of the purchase order is required")
         LocalDateTime creationDate,
+        @NotNull(message = "The update date of the purchase order is required")
+        LocalDateTime lastUpdate,
         @NotNull(message = "The state of the purchase order is required")
         Status orderStatus,
         @NotNull(message = "The payment status of the purchase order is required")

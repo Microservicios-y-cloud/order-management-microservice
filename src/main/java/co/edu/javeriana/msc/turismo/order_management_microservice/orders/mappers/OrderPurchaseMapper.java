@@ -36,6 +36,7 @@ public class OrderPurchaseMapper {
         return new OrderPurchaseResponse(
                 orderPurchase.getId(),
                 orderPurchase.getCreationDate(),
+                orderPurchase.getLastUpdate(),
                 orderPurchase.getOrderStatus(),
                 orderPurchase.getPaymentStatus(),
                 orderPurchase.getCreatedBy(),
@@ -52,6 +53,7 @@ public class OrderPurchaseMapper {
         return new OrderPurchaseRequest(
                 orderPurchase.getId(),
                 orderPurchase.getCreationDate(),
+                orderPurchase.getLastUpdate(),
                 orderPurchase.getOrderStatus(),
                 orderPurchase.getPaymentStatus(),
                 orderPurchase.getCreatedBy(),

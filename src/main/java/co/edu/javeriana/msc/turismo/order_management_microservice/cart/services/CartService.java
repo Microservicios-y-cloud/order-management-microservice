@@ -6,6 +6,11 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.cart.mapper.Ca
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.Cart;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.CartItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.repository.CartRepository;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +92,37 @@ public class CartService {
         if (cartRequest.cartItems() != null && !cartRequest.cartItems().isEmpty()) {
             cart.setCartItems(cartRequest.cartItems());
         }
+    }
+
+
+    public OrderPurchaseRequest toOrderRequest(CartResponse cartRequest) {
+        Double amount = cartRequest.cartItems().stream()
+                .mapToDouble(CartItem::getSubtotal)
+                .sum();
+    
+        // Convertir cada CartItem a OrderItem usando el método toOrderItem
+        List<OrderItem> orderItems = cartRequest.cartItems().stream()
+                .map(this::toOrderItem) // Convierte cada CartItem a OrderItem
+                .toList(); // Convierte el Stream a List<OrderItem>
+    
+        return new OrderPurchaseRequest(
+                cartRequest.id(),
+                cartRequest.creationDate(),
+                cartRequest.lastUpdate(),
+                Status.POR_ACEPTAR,
+                PaymentStatus.RECHAZADA,
+                cartRequest.createdBy(),
+                orderItems,  // Pasar la lista de OrderItems en lugar de CartItems
+                amount
+        );
+    }
+
+
+    public OrderItem toOrderItem(CartItem cartItem) {
+        return new OrderItem(
+                cartItem.getSubtotal(),
+                cartItem.getQuantity(),
+                cartItem.getServiceId()
+        );
     }
 }
