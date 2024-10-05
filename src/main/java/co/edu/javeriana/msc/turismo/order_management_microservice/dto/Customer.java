@@ -1,5 +1,6 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.dto;
 
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Builder
 @Validated
 public class Customer {
+    @Id
     @NotNull(message = "The id of the user is required")
     private String id;
     @NotNull(message = "The user type is required")

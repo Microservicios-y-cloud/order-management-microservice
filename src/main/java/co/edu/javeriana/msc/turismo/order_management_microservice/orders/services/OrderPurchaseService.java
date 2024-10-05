@@ -1,7 +1,9 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.services;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.OrderPurchaseMapper;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.PurchaseNotificationMapper;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderPurchase;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchaseNotification;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class OrderPurchaseService {
     private final OrderPurchaseRepository repository;
     private final SuperServiceRepository superServiceRepository;
     private final MessageQueueService messageQueueService;
+    private final PurchaseNotificationMapper purchaseNotificationMapper;
 
     public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
         for (var orderItem : request.orderItems()) {
@@ -44,7 +47,7 @@ public class OrderPurchaseService {
         var auxOrderPurchase = repository.save(orderPurchase);
         log.info("PRUEBAAAAA: {}", auxOrderPurchase.getId());
 
-        messageQueueService.sendPaymentOrder(new UserTransactionRequest(auxOrderPurchase.getId(), auxOrderPurchase.getCreatedBy().getId(),
+        messageQueueService.sendPaymentOrder(new UserTransactionRequest(auxOrderPurchase.getId(), auxOrderPurchase.getCreatedBy(),
                                                                     auxOrderPurchase.getAmount(), auxOrderPurchase.getOrderStatus(),
                                                                     auxOrderPurchase.getPaymentStatus()));
         return auxOrderPurchase.getId();
@@ -82,6 +85,9 @@ public class OrderPurchaseService {
         // Si quieres asegurarte de que la entidad está gestionada, puedes evitar la duplicación usando el ID correctamente
         // El repositorio debe actualizar la entidad si el ID ya está en la base de datos
         var updatedOrderPurchase = repository.save(orderPurchase);
+
+        messageQueueService.sendOrderNotification(purchaseNotificationMapper.toPurchaseNotification(updatedOrderPurchase));
+        log.info("MESSAGE SENT: {}", updatedOrderPurchase);
     
         // Devolver la respuesta con la entidad actualizada
         return OrderPurchaseMapper.toOrderPurchaseResponse(updatedOrderPurchase);

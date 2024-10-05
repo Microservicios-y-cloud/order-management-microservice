@@ -9,6 +9,7 @@ spring:
       mongodb:
         uri: mongodb+srv://kevinevelasco:kevinevelasco@msc-cluster.gh4kp.mongodb.net/?retryWrites=true&w=majority&appName=msc-cluster
         database: cart
+        auto-index-creation: true
   # Message queue
   cloud:
     function:
@@ -28,6 +29,8 @@ spring:
         sendPaymentOrder-out-0:
         # Name of the queue that will manage the messages
           destination: order-payment-queue
+        sendOrderNotification-out-0:
+          destination: order-notification-queue
         receiveStatus-in-0:
           destination: payment-order-queue
           group: my-consumer-group
