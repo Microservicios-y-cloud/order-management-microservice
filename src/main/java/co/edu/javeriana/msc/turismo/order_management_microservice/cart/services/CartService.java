@@ -69,6 +69,11 @@ public class CartService {
         if (!superServiceRepository.existsById(cartItem.getServiceId())) {
             throw new RuntimeException("Service not found");
         }
+        for (CartItem i : cart.getCartItems()) {
+            if (i.getServiceId() == cartItem.getServiceId()) {
+                throw new RuntimeException("Service repeated");
+            }
+        }
         cart.getCartItems().add(cartItem);
         cart.setLastUpdate(LocalDateTime.now());
         cartRepository.save(cart);
