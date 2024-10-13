@@ -2,8 +2,10 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.orders.servic
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.OrderPurchaseMapper;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.PurchaseNotificationMapper;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.PurchasedInformationMapper;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderPurchase;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchaseNotification;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchasedInformation;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,8 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.Reposit
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.UserTransactionRequest;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
+
 import java.util.UUID;
 
 import java.util.List;
@@ -34,6 +38,7 @@ public class OrderPurchaseService {
     private final SuperServiceRepository superServiceRepository;
     private final MessageQueueService messageQueueService;
     private final PurchaseNotificationMapper purchaseNotificationMapper;
+    private final PurchasedInformationMapper purchasedInformationMapper;
 
     public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
         for (var orderItem : request.orderItems()) {
@@ -88,6 +93,11 @@ public class OrderPurchaseService {
 
         messageQueueService.sendOrderNotification(purchaseNotificationMapper.toPurchaseNotification(updatedOrderPurchase));
         log.info("MESSAGE SENT: {}", updatedOrderPurchase);
+
+        if(orderPurchaseRequest.paymentStatus() == PaymentStatus.ACEPTADA){
+            messageQueueService.sendOrderQualification(purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase));
+            log.info("MESSAGE SENT TO RATINGS AAA: {}", purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase).toString());
+        }
     
         // Devolver la respuesta con la entidad actualizada
         return OrderPurchaseMapper.toOrderPurchaseResponse(updatedOrderPurchase);

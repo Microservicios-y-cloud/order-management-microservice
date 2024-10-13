@@ -4,6 +4,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.Ord
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.UserTransactionRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderPurchase;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchasedInformation;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchaseNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,9 @@ public class MessageQueueService {
     @Value("${spring.cloud.stream.bindings.sendOrderNotification-out-0.destination}")
     private String notificationQueueName;
 
+    @Value("${spring.cloud.stream.bindings.sendOrderQualification-out-0.destination}")
+    private String qualificationQueueName;
+
     @Autowired
     private StreamBridge streamBridge;
     public boolean sendPaymentOrder(UserTransactionRequest orderInformation) {
@@ -31,5 +35,9 @@ public class MessageQueueService {
 
     public boolean sendOrderNotification(PurchaseNotification purchaseNotification) {
         return streamBridge.send(notificationQueueName, MessageBuilder.withPayload(purchaseNotification).build());
+    }
+
+    public boolean sendOrderQualification(PurchasedInformation purchaseQualification){
+        return streamBridge.send(qualificationQueueName, MessageBuilder.withPayload(purchaseQualification).build());
     }
 }

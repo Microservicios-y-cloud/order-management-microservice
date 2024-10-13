@@ -31,6 +31,8 @@ spring:
           destination: order-payment-queue
         sendOrderNotification-out-0:
           destination: order-notification-queue
+        sendOrderQualification-out-0:
+          destination: order-qualification-queue
         receiveStatus-in-0:
           destination: payment-order-queue
           group: my-consumer-group

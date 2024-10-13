@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.SuperServiceDTO;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
+import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import static co.edu.javeriana.msc.turismo.order_management_microservice.enums.C
 public class StatusQueueConsumer {
 
     private final SuperServiceRepository repository;
+    private final MessageQueueService messageQueueService;
     private final OrderPurchaseService orderPurchaseService;
     private final OrderPurchaseRepository orderPurchaseRepository;
     private final OrderPurchaseMapper orderPurchaseMapper;
@@ -49,6 +51,14 @@ public class StatusQueueConsumer {
             OrderPurchaseRequest orderPurchaseRequest = OrderPurchaseMapper.toOrderPurchaseRequest(orderPurchase.get());
             log.info("OrderPurchaseRequest: {}", orderPurchase.get());
             orderPurchaseService.updateOrderPurchaseEstado(orderPurchaseid, orderPurchaseRequest);
+
+            /*//Si el pago se completó de forma exitosa
+            if(userTransactionRequest.getPaymentStatus().equals("ACEPTADA")){
+                //Se envía la información al MS que se encarga de la calificación
+
+                messageQueueService.sendOrderQualification(orderPurchase.get(userTransactionRequest.get));
+            }*/
+
         };
     }
 
