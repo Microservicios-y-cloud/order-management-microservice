@@ -36,7 +36,21 @@ public class OrderPurchaseController {
         public ResponseEntity<List<OrderPurchaseResponse>> findAll() {
             return ResponseEntity.ok(orderPurchaseService.findAllOrderPurchases());
         }
-    
+
+        // Obtener todas las ordenes aprovadas por usuario
+        @GetMapping("/purchased/{id}")
+        public ResponseEntity<List<OrderPurchaseResponse>> getPurchasedByUser(
+                @PathVariable("id") String id) {
+            return ResponseEntity.ok(orderPurchaseService.findAllPurchasedByUsers(id));
+        }
+
+        // Obtener todas las ordenes por usuario
+        @GetMapping("/ordered/{id}")
+        public ResponseEntity<List<OrderPurchaseResponse>> getOrdersdByUser(
+                @PathVariable("id") String id) {
+            return ResponseEntity.ok(orderPurchaseService.findAllOrdersByUsers(id));
+        }
+
         // Crear una nueva orden
         @PostMapping
         public ResponseEntity<String> createOrder(

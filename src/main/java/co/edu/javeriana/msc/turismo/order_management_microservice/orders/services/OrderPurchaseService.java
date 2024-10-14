@@ -20,9 +20,10 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.Ord
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.UserTransactionRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
+import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 import java.util.UUID;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.concurrent.ThreadLocalRandom;
@@ -63,6 +64,44 @@ public class OrderPurchaseService {
                 .map(OrderPurchaseMapper::toOrderPurchaseResponse)
                 .orElseThrow(() -> new EntityNotFoundException("OrderPurchase not found, with id: " + orderPurchaseId));
     }
+
+    public List<OrderPurchaseResponse> findAllOrdersByUsers(String id) {
+        List<OrderPurchaseResponse> all = repository.findAll()
+            .stream()
+            .map(OrderPurchaseMapper::toOrderPurchaseResponse)
+            .collect(Collectors.toList());
+    
+        List<OrderPurchaseResponse> ordersByUserApproved = new ArrayList<>();
+    
+        for (OrderPurchaseResponse order : all) {
+            System.out.println(order.id());
+            
+            if (order.createdBy().getId().equals(id)) {
+                ordersByUserApproved.add(order);
+            }
+        }
+        return ordersByUserApproved;
+    }
+
+    public List<OrderPurchaseResponse> findAllPurchasedByUsers(String id) {
+    List<OrderPurchaseResponse> all = repository.findAll()
+        .stream()
+        .map(OrderPurchaseMapper::toOrderPurchaseResponse)
+        .collect(Collectors.toList());
+
+    List<OrderPurchaseResponse> ordersByUserApproved = new ArrayList<>();
+
+    for (OrderPurchaseResponse order : all) {
+        System.out.println(order.id());
+        
+        //Devuelve unicamente las ordenes que se pudieron pagar
+        if (order.createdBy().getId().equals(id) && order.orderstatus() == Status.ACEPTADA && order.paymentStatus() == PaymentStatus.ACEPTADA) {
+            ordersByUserApproved.add(order);
+        }
+    }
+    return ordersByUserApproved;
+}
+
 
     public List<OrderPurchaseResponse> findAllOrderPurchases() {
         return repository.findAll()
