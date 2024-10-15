@@ -73,12 +73,19 @@ public class StatusQueueConsumer {
                     repository.save(message.getPayload().getSuperService());
                     log.info("Service saved: {}", message.getPayload().getSuperService());
                     break;
-//                case UPDATE:
-//                    repository.save(new SuperService(message.getPayload().getService()));
-//                    break;
-//                case DELETE:
-//                    repository.deleteById(message.getPayload().getService().getId());
-//                    break;
+                case UPDATE:
+                    var serviceToUpdate = repository.findById(message.getPayload().getSuperService().id()).orElse(null);
+                    if(serviceToUpdate != null) {
+                        repository.save(message.getPayload().getSuperService());
+                        log.info("Service updated: {}", message.getPayload().getSuperService().id());
+                    } else {
+                        log.error("Service not found: {}", message.getPayload().getSuperService().id());
+                    }
+                    break;
+                case DELETE:
+                    repository.deleteById(message.getPayload().getSuperService().id());
+                    log.info("Service deleted: {}", message.getPayload().getSuperService().id());
+                    break;
                 default:
                     log.error("Invalid action: {}", message.getPayload().getEventType());
                     break;
