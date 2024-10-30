@@ -1,5 +1,6 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.services;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.cart.services.CartService;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.OrderPurchaseMapper;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.PurchaseNotificationMapper;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.mappers.PurchasedInformationMapper;
@@ -40,6 +41,7 @@ public class OrderPurchaseService {
     private final MessageQueueService messageQueueService;
     private final PurchaseNotificationMapper purchaseNotificationMapper;
     private final PurchasedInformationMapper purchasedInformationMapper;
+    private final CartService cartService;
 
     public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
         for (var orderItem : request.orderItems()) {
@@ -136,6 +138,11 @@ public class OrderPurchaseService {
         if(orderPurchaseRequest.paymentStatus() == PaymentStatus.ACEPTADA){
             messageQueueService.sendOrderQualification(purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase));
             log.info("MESSAGE SENT TO RATINGS AAA: {}", purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase).toString());
+            //se revisa si hay un carrito con los items asociados a el usuario y si son los mismos que están en orderPurchase
+            var cart = cartService.getCartByUser(orderPurchaseRequest.createdBy().getId());
+            if (cart != null) {
+                    cartService.deleteCart(cart.id());
+            }
         }
     
         // Devolver la respuesta con la entidad actualizada

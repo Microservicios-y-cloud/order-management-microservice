@@ -13,6 +13,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.S
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,23 @@ public class CartService {
 
     public String createCart(CartRequest cartRequest) {
         for (CartItem cartItem : cartRequest.cartItems()) {
-            if (!superServiceRepository.existsById(cartItem.getServiceId())) {
-                throw new RuntimeException("Service not found");
+            if (cartItem.getQuantity() <= 0) {
+                throw new RuntimeException("Quantity must be greater than 0");
             }
+            if (cartItem.getSubtotal() <= 0) {
+                throw new RuntimeException("Subtotal must be greater than 0");
+            }
+            if (!superServiceRepository.existsById(cartItem.getServiceId())) {
+                throw new NotFoundException("Service not found");
+            } else {
+                var service = superServiceRepository.findById(cartItem.getServiceId()).get();
+                if (service.startDate().isAfter(LocalDateTime.now()) || service.endDate().isBefore(LocalDateTime.now())) {
+                    throw new RuntimeException("Service not available");
+                }
+            }
+        }
+        if (cartRequest.createdBy() == null) {
+            throw new NotFoundException("User not found");
         }
         var cart = cartRepository.save(cartMapper.toCart(cartRequest));
         return cart.getId();
@@ -47,7 +62,7 @@ public class CartService {
                 throw new RuntimeException("Service not found");
             }
         }
-      mergerCart(cart, cartRequest);
+        mergerCart(cart, cartRequest);
         cartRepository.save(cart);
         return cart.getId();
     }
@@ -104,12 +119,12 @@ public class CartService {
         Double amount = cartRequest.cartItems().stream()
                 .mapToDouble(CartItem::getSubtotal)
                 .sum();
-    
+
         // Convertir cada CartItem a OrderItem usando el método toOrderItem
         List<OrderItem> orderItems = cartRequest.cartItems().stream()
                 .map(this::toOrderItem) // Convierte cada CartItem a OrderItem
                 .toList(); // Convierte el Stream a List<OrderItem>
-    
+
         return new OrderPurchaseRequest(
                 cartRequest.id(),
                 cartRequest.creationDate(),
