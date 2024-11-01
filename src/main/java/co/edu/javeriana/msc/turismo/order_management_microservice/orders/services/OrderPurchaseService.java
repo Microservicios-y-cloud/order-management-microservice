@@ -9,6 +9,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.Pur
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.dtos.PurchasedInformation;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.services.MessageQueueService;
+import jakarta.ws.rs.ServiceUnavailableException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,9 +56,12 @@ public class OrderPurchaseService {
         var auxOrderPurchase = repository.save(orderPurchase);
         log.info("PRUEBAAAAA: {}", auxOrderPurchase.getId());
 
-        messageQueueService.sendPaymentOrder(new UserTransactionRequest(auxOrderPurchase.getId(), auxOrderPurchase.getCreatedBy(),
+        var sent = messageQueueService.sendPaymentOrder(new UserTransactionRequest(auxOrderPurchase.getId(), auxOrderPurchase.getCreatedBy(),
                                                                     auxOrderPurchase.getAmount(), auxOrderPurchase.getOrderStatus(),
                                                                     auxOrderPurchase.getPaymentStatus()));
+        if(!sent) {
+            throw new ServiceUnavailableException("Error sending user transaction to queue. Kafka service is currently unavailable. Please try again later.");
+        }
         return auxOrderPurchase.getId();
     }
 
@@ -132,11 +136,17 @@ public class OrderPurchaseService {
         // El repositorio debe actualizar la entidad si el ID ya está en la base de datos
         var updatedOrderPurchase = repository.save(orderPurchase);
 
-        messageQueueService.sendOrderNotification(purchaseNotificationMapper.toPurchaseNotification(updatedOrderPurchase));
+        var sent = messageQueueService.sendOrderNotification(purchaseNotificationMapper.toPurchaseNotification(updatedOrderPurchase));
+        if (!sent) {
+            throw new ServiceUnavailableException("Error sending purchase notification to queue. Kafka service is currently unavailable. Please try again later.");
+        }
         log.info("MESSAGE SENT: {}", updatedOrderPurchase);
 
         if(orderPurchaseRequest.paymentStatus() == PaymentStatus.ACEPTADA){
-            messageQueueService.sendOrderQualification(purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase));
+            var sent2 = messageQueueService.sendOrderQualification(purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase));
+            if (!sent2) {
+                throw new ServiceUnavailableException("Error sending purchase qualification to queue. Kafka service is currently unavailable. Please try again later.");
+            }
             log.info("MESSAGE SENT TO RATINGS AAA: {}", purchasedInformationMapper.toPurchasedInformation(updatedOrderPurchase).toString());
             //se revisa si hay un carrito con los items asociados a el usuario y si son los mismos que están en orderPurchase
             var cart = cartService.getCartByUser(orderPurchaseRequest.createdBy().getId());
