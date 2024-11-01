@@ -1,4 +1,4 @@
-package co.edu.javeriana.msc.turismo.service_publication_microservice.advice;
+package co.edu.javeriana.msc.turismo.order_management_microservice.advice;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
