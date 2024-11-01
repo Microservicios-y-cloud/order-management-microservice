@@ -46,7 +46,7 @@ public class OrderPurchaseService {
     public String createOrderPurchase(@Valid OrderPurchaseRequest request) {
         for (var orderItem : request.orderItems()) {
             if (!superServiceRepository.existsById(orderItem.getServiceId())) {
-                throw new RuntimeException("Service not found");
+                throw new EntityNotFoundException("Service not found");
             }
         }
         
@@ -120,7 +120,7 @@ public class OrderPurchaseService {
         // Validar que los servicios asociados a los items de la orden existen
         for (var orderItem : orderPurchaseRequest.orderItems()) {
             if (!superServiceRepository.existsById(orderItem.getServiceId())) {
-                throw new RuntimeException("Service not found with id: " + orderItem.getServiceId());
+                throw new EntityNotFoundException("Service not found with id: " + orderItem.getServiceId());
             }
         }
     

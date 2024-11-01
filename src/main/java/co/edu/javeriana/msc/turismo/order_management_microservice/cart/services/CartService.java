@@ -12,11 +12,13 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.P
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;
 import co.edu.javeriana.msc.turismo.order_management_microservice.queue.repository.SuperServiceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,22 +34,22 @@ public class CartService {
     public String createCart(CartRequest cartRequest) {
         for (CartItem cartItem : cartRequest.cartItems()) {
             if (cartItem.getQuantity() <= 0) {
-                throw new RuntimeException("Quantity must be greater than 0");
+                throw new IllegalArgumentException("Quantity must be greater than 0");
             }
             if (cartItem.getSubtotal() <= 0) {
-                throw new RuntimeException("Subtotal must be greater than 0");
+                throw new IllegalArgumentException("Subtotal must be greater than 0");
             }
             if (!superServiceRepository.existsById(cartItem.getServiceId())) {
-                throw new NotFoundException("Service not found");
+                throw new EntityNotFoundException("Service not found");
             } else {
                 var service = superServiceRepository.findById(cartItem.getServiceId()).get();
                 if (service.startDate().isAfter(LocalDateTime.now()) || service.endDate().isBefore(LocalDateTime.now())) {
-                    throw new RuntimeException("Service not available");
+                    throw new IllegalArgumentException("Service not available");
                 }
             }
         }
         if (cartRequest.createdBy() == null) {
-            throw new NotFoundException("User not found");
+            throw new EntityNotFoundException("User not found");
         }
         var cart = cartRepository.save(cartMapper.toCart(cartRequest));
         return cart.getId();
@@ -59,7 +61,7 @@ public class CartService {
         );
         for (CartItem cartItem : cartRequest.cartItems()) {
             if (!superServiceRepository.existsById(cartItem.getServiceId())) {
-                throw new RuntimeException("Service not found");
+                throw new EntityNotFoundException("Service not found");
             }
         }
         mergerCart(cart, cartRequest);
@@ -70,7 +72,7 @@ public class CartService {
     public CartResponse getCart(String id) {
         return cartRepository.findById(id)
                 .map(cartMapper::toCartResponse)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
     public void deleteCart(String id) {
@@ -79,14 +81,14 @@ public class CartService {
 
     public String addCartItem(String id, CartItem cartItem) {
         var cart = cartRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cart not found")
+                () -> new EntityNotFoundException("Cart not found")
         );
         if (!superServiceRepository.existsById(cartItem.getServiceId())) {
-            throw new RuntimeException("Service not found");
+            throw new EntityNotFoundException("Service not found");
         }
         for (CartItem i : cart.getCartItems()) {
             if (i.getServiceId() == cartItem.getServiceId()) {
-                throw new RuntimeException("Service repeated");
+                throw new IllegalArgumentException("Service already in cart");
             }
         }
         cart.getCartItems().add(cartItem);
@@ -97,7 +99,7 @@ public class CartService {
 
     public String deleteCartItem(String id, CartRequest cartRequest) {
         var cart = cartRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cart not found")
+                () -> new EntityNotFoundException("Cart not found")
         );
         cart.getCartItems().removeAll(cartRequest.cartItems());
         cart.setLastUpdate(LocalDateTime.now());
@@ -149,6 +151,6 @@ public class CartService {
     public CartResponse getCartByUser(String userId) {
         return cartRepository.findByCreatedBy_Id(userId)
                 .map(cartMapper::toCartResponse)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 }
