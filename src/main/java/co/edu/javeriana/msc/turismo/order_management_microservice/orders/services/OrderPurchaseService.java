@@ -25,6 +25,7 @@ import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.P
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
 
 import java.util.UUID;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,16 @@ public class OrderPurchaseService {
             if (!superServiceRepository.existsById(orderItem.getServiceId())) {
                 throw new EntityNotFoundException("Service not found");
             }
+        }
+
+        //Reglas de negocio
+        //Comprobar que la orden tenga items
+        if(request.orderItems().isEmpty()) {
+            throw new IllegalArgumentException("Order must have at least one item. Please try again.");
+        }
+        //Comprobar que la fecha de creación de la orden sea válida
+        if(request.creationDate().isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Creation date must be valid");
         }
         
         var orderPurchase = OrderPurchaseMapper.toOrderPurchase(request);
