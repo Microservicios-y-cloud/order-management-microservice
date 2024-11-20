@@ -97,14 +97,18 @@ public class CartService {
         return cart.getId();
     }
 
-    public String deleteCartItem(String id, CartRequest cartRequest) {
+    public void deleteCartItem(String id, Long service) {
         var cart = cartRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Cart not found")
         );
-        cart.getCartItems().removeAll(cartRequest.cartItems());
+        //borramos el item del carrito
+        var item = cart.getCartItems().stream()
+                .filter(i -> i.getServiceId().equals(service))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
+        cart.getCartItems().remove(item);
         cart.setLastUpdate(LocalDateTime.now());
         cartRepository.save(cart);
-        return cart.getId();
     }
 
     private void mergerCart(Cart cart, @Valid CartRequest cartRequest) {

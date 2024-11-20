@@ -45,7 +45,7 @@ public class CartController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCart(@PathVariable String id) {
         cartService.deleteCart(id);
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.noContent().build();
     }
 
     //add cartItem to cart
@@ -55,9 +55,10 @@ public class CartController {
     }
 
     //delete cartItem from cart
-    @DeleteMapping("/{id}/cartItem")
-    public ResponseEntity<String> deleteCartItem(@PathVariable String id, @RequestBody @Valid CartRequest cartRequest) {
-        return ResponseEntity.ok(cartService.deleteCartItem(id, cartRequest));
+    @DeleteMapping("/{id}/cartItem/{cartItem}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable String id, @PathVariable Long cartItem) {
+        cartService.deleteCartItem(id, cartItem);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/purchase/{id}")
