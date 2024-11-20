@@ -174,7 +174,7 @@ class OrderPurchaseControllerTest {
         List<OrderPurchaseResponse> allOrders = orderPurchaseService.findAllOrderPurchases();
 
         assertThat(allOrders).isNotNull();
-        assertThat(allOrders.size()).isEqualTo(2); // Verifica que haya dos órdenes en el repositorio
+        assertThat(allOrders.size()).isEqualTo(2);
         assertThat(allOrders.get(0).id()).isEqualTo(order1.getId());
         assertThat(allOrders.get(1).id()).isEqualTo(order2.getId());
     }
