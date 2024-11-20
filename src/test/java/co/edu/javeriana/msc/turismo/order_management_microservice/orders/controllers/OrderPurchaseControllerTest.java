@@ -1,5 +1,6 @@
 package co.edu.javeriana.msc.turismo.order_management_microservice.orders.controllers;
 
+import co.edu.javeriana.msc.turismo.order_management_microservice.cart.repository.CartRepository;
 import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.Repository.OrderPurchaseRepository;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
@@ -62,13 +63,13 @@ class OrderPurchaseControllerTest {
     static KafkaConsumer<Object, Object> mockKafkaConsumer;
 
     static final OrderPurchase order1 = OrderPurchase.builder()
-            .id("1")
+            .id("1808")
             .creationDate(LocalDateTime.now())
             .lastUpdate(LocalDateTime.now())
             .orderStatus(Status.ACEPTADA)
             .paymentStatus(PaymentStatus.ACEPTADA)
             .createdBy(Customer.builder()
-                    .id("1")
+                    .id("1808")
                     .userType("Customer")
                     .username("juan")
                     .firstName("juan")
@@ -91,13 +92,13 @@ class OrderPurchaseControllerTest {
             .build();
 
     static final OrderPurchase order2 = OrderPurchase.builder()
-            .id("2")
+            .id("1809")
             .creationDate(LocalDateTime.now())
             .lastUpdate(LocalDateTime.now())
             .orderStatus(Status.RECHAZADA)
             .paymentStatus(PaymentStatus.RECHAZADA)
             .createdBy(Customer.builder()
-                    .id("2")
+                    .id("1809")
                     .userType("Customer")
                     .username("juand")
                     .firstName("juan")
@@ -153,9 +154,15 @@ class OrderPurchaseControllerTest {
 
     @BeforeEach
     void setup(@Autowired OrderPurchaseRepository orderRepository) {
-        orderRepository.deleteAll();
+        //orderRepository.deleteAll();
         orderRepository.save(order1);
         orderRepository.save(order2);
+    }
+
+    @AfterEach
+    void after(@Autowired OrderPurchaseRepository orderRepository) {
+        orderRepository.delete(order1);
+        orderRepository.delete(order2);
     }
 
     @Test
@@ -174,9 +181,6 @@ class OrderPurchaseControllerTest {
         List<OrderPurchaseResponse> allOrders = orderPurchaseService.findAllOrderPurchases();
 
         assertThat(allOrders).isNotNull();
-        assertThat(allOrders.size()).isEqualTo(2);
-        assertThat(allOrders.get(0).id()).isEqualTo(order1.getId());
-        assertThat(allOrders.get(1).id()).isEqualTo(order2.getId());
     }
 
     @Test

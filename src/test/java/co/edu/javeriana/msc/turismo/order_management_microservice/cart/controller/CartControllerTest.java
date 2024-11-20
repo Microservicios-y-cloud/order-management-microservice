@@ -150,9 +150,14 @@ class CartControllerTest {
 
     @BeforeEach
     void setup(@Autowired CartRepository carritoRepository) {
-        carritoRepository.deleteAll();
         carritoRepository.save(carrito1);
         carritoRepository.save(carrito2);
+    }
+
+    @AfterEach
+    void after(@Autowired CartRepository carritoRepository) {
+        cartService.deleteCart(carrito1.getId());
+        cartService.deleteCart(carrito2.getId());
     }
 
 
