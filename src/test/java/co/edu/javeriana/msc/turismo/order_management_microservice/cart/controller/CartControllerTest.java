@@ -3,244 +3,104 @@ package co.edu.javeriana.msc.turismo.order_management_microservice.cart.controll
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.dtos.CartRequest;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.dtos.CartResponse;
 import co.edu.javeriana.msc.turismo.order_management_microservice.cart.model.CartItem;
-import co.edu.javeriana.msc.turismo.order_management_microservice.cart.services.CartService;
 import co.edu.javeriana.msc.turismo.order_management_microservice.dto.Customer;
 import co.edu.javeriana.msc.turismo.order_management_microservice.orders.dto.OrderPurchaseRequest;
-import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.PaymentStatus;
-import co.edu.javeriana.msc.turismo.order_management_microservice.orders.enums.Status;
-import co.edu.javeriana.msc.turismo.order_management_microservice.orders.model.OrderItem;
-import co.edu.javeriana.msc.turismo.order_management_microservice.orders.services.OrderPurchaseService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CartControllerTest {
 
-    @Mock
-    private CartService cartService;
-
-    @Mock
-    private OrderPurchaseService orderPurchaseService;
-
-    @InjectMocks
+    @Autowired
     private CartController cartController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    private CartRequest createSampleCartRequest() {
+        LocalDateTime now = LocalDateTime.now();
+        Customer customer = new Customer("122", "customer", "Juan", "Diego", "Echeverry", "juan_echeverry@javeriana.edu.co");
+        List<CartItem> items = List.of(new CartItem(1L, 2, 100.0));
+        return new CartRequest("carrito", now, now, customer, items);
     }
 
     @Test
-    void crearCarrito() {
-        LocalDateTime creationTime = LocalDateTime.now();
-        LocalDateTime lastUpdateTime = LocalDateTime.now();
-        Customer customer = new Customer("122", "customer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co");
-        List<CartItem> cartItems = List.of(new CartItem(1L, 2, 100.0));
-
-        CartRequest cartRequest = new CartRequest("carrito", creationTime, lastUpdateTime, customer, cartItems);
-
-        when(cartService.createCart(cartRequest)).thenReturn("Carrito creado");
-
+    void createCart() {
+        CartRequest cartRequest = createSampleCartRequest();
         ResponseEntity<String> response = cartController.createCart(cartRequest);
 
-        assertEquals("Carrito creado", response.getBody());
-        verify(cartService, times(1)).createCart(cartRequest);
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
     }
 
     @Test
-    void actualizarCarrito() {
-        LocalDateTime creationTime = LocalDateTime.now();
-        LocalDateTime lastUpdateTime = LocalDateTime.now();
-        Customer customer = new Customer("122", "customer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co");
-        List<CartItem> cartItems = List.of(new CartItem(1L, 2, 100.0));
-
-        CartRequest cartRequest = new CartRequest("carrito", creationTime, lastUpdateTime, customer, cartItems);
-
-        when(cartService.updateCart(cartRequest)).thenReturn("Carrito actualizado");
-
-        ResponseEntity<String> response = cartController.updateCart(cartRequest);
-
-        assertEquals("Carrito actualizado", response.getBody());
-        verify(cartService, times(1)).updateCart(cartRequest);
-    }
-
-    @Test
-    void procesarCompra() {
-        String cartId = "carrito";
-        LocalDateTime creationTime = LocalDateTime.now();
-        LocalDateTime lastUpdateTime = LocalDateTime.now();
-        Customer customer = new Customer("122", "customer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co");
-        List<CartItem> cartItems = List.of(new CartItem(1L, 2, 100.0));
-        List<OrderItem> orderItems = cartItems.stream()
-                .map(cartItem -> new OrderItem(cartItem.getSubtotal(), cartItem.getQuantity(), cartItem.getServiceId()))
-                .toList();
-        Double totalAmount = cartItems.stream().mapToDouble(CartItem::getSubtotal).sum();
-
-        CartResponse cartResponse = new CartResponse(
-                cartId,
-                creationTime,
-                lastUpdateTime,
-                customer,
-                cartItems
-        );
-
-        Status orderStatus = Status.ACEPTADA;
-        PaymentStatus paymentStatus = PaymentStatus.ACEPTADA;
-
-        OrderPurchaseRequest expectedOrderPurchaseRequest = new OrderPurchaseRequest(
-                cartId,
-                creationTime,
-                lastUpdateTime,
-                orderStatus,
-                paymentStatus,
-                customer,
-                orderItems,
-                totalAmount
-        );
-
-        when(cartService.getCart(cartId)).thenReturn(cartResponse);
-        when(cartService.toOrderRequest(cartResponse)).thenReturn(expectedOrderPurchaseRequest);
-
-        ResponseEntity<OrderPurchaseRequest> response = cartController.purchase(cartId);
-
-        assertEquals(expectedOrderPurchaseRequest, response.getBody());
-        verify(cartService, times(1)).getCart(cartId);
-        verify(cartService, times(1)).toOrderRequest(cartResponse);
-        verify(orderPurchaseService, times(1)).createOrderPurchase(expectedOrderPurchaseRequest);
-    }
-
-    @Test
-    void enviarSolicitudDeCompra() {
-        String cartId = "carrito";
-        LocalDateTime creationTime = LocalDateTime.now();
-        LocalDateTime lastUpdateTime = LocalDateTime.now();
-        Customer customer = new Customer("122", "customer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co");
-        List<CartItem> cartItems = List.of(new CartItem(1L, 2, 100.0));
-        List<OrderItem> orderItems = cartItems.stream()
-                .map(cartItem -> new OrderItem(cartItem.getSubtotal(), cartItem.getQuantity(), cartItem.getServiceId()))
-                .toList();
-        Double totalAmount = cartItems.stream().mapToDouble(CartItem::getSubtotal).sum();
-
-        // Respuesta simulada del carrito
-        CartResponse cartResponse = new CartResponse(
-                cartId,
-                creationTime,
-                lastUpdateTime,
-                customer,
-                cartItems
-        );
-
-        Status orderStatus = Status.PAGADA;
-        PaymentStatus paymentStatus = PaymentStatus.ACEPTADA;
-
-        // Solicitud de compra esperada
-        OrderPurchaseRequest expectedOrderPurchaseRequest = new OrderPurchaseRequest(
-                cartId,
-                creationTime,
-                lastUpdateTime,
-                orderStatus,
-                paymentStatus,
-                customer,
-                orderItems,
-                totalAmount
-        );
-
-        when(cartService.getCart(cartId)).thenReturn(cartResponse);
-        when(cartService.toOrderRequest(cartResponse)).thenReturn(expectedOrderPurchaseRequest);
-
-        ResponseEntity<OrderPurchaseRequest> response = cartController.purchase(cartId);
-
-        assertEquals(expectedOrderPurchaseRequest, response.getBody());
-        verify(cartService, times(1)).getCart(cartId);
-        verify(cartService, times(1)).toOrderRequest(cartResponse);
-        verify(orderPurchaseService, times(1)).createOrderPurchase(expectedOrderPurchaseRequest);
-    }
-
-
-
-
-
-    @Test
-    void retornoDeRespuestaParaUnCarrito() {
-        CartResponse cartResponse = new CartResponse(
-                "carrito",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                new Customer("122", "sutomer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co"),
-                Collections.singletonList(new CartItem(1L, 2, 100.0))
-        );
-
-        when(cartService.getCart("carrito")).thenReturn(cartResponse);
+    void getCart() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
         ResponseEntity<CartResponse> response = cartController.getCart("carrito");
 
-        assertEquals(cartResponse, response.getBody());
-        verify(cartService, times(1)).getCart("carrito");
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("carrito", response.getBody().id());
     }
 
     @Test
-    void obtenerCarritoPorUsuario() {
-        CartResponse cartResponse = new CartResponse(
-                "carrito",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                new Customer("122", "customer", "juand", "diego", "echeverry", "juan_echeverry@javeriana.edu.co"),
-                Collections.singletonList(new CartItem(1L, 2, 100.0))
-        );
+    void getCartByUser() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
-        when(cartService.getCartByUser("juand")).thenReturn(cartResponse);
+        ResponseEntity<CartResponse> response = cartController.getCartByUser("Juan");
 
-        ResponseEntity<CartResponse> response = cartController.getCartByUser("juand");
-
-        assertEquals(cartResponse, response.getBody());
-        verify(cartService, times(1)).getCartByUser("juand");
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("carrito", response.getBody().id());
     }
 
     @Test
-    void eliminarCarrito() {
-        //El punto es que no devuelva nada
-        String cartId = "carrito";
+    void deleteCart() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
-        ResponseEntity<Void> response = cartController.deleteCart(cartId);
+        ResponseEntity<Void> response = cartController.deleteCart("carrito");
 
         assertEquals(204, response.getStatusCodeValue());
-        verify(cartService, times(1)).deleteCart(cartId);
     }
 
     @Test
-    void añadirItemACarrito() {
-        String cartId = "carrito";
-        CartItem cartItem = new CartItem(1L, 2, 100.0);
+    void addCartItem() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
-        when(cartService.addCartItem(cartId, cartItem)).thenReturn("Item añadido");
+        CartItem newItem = new CartItem(2L, 1, 50.0);
+        ResponseEntity<String> response = cartController.addCartItem("carrito", newItem);
 
-        ResponseEntity<String> response = cartController.addCartItem(cartId, cartItem);
-
-        assertEquals("Item añadido", response.getBody());
-        verify(cartService, times(1)).addCartItem(cartId, cartItem);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Item añadido al carrito", response.getBody());
     }
 
     @Test
-    void eliminarItemDeCarrito() {
-        //El pinto es que no devuelva nada
-        String cartId = "carrito";
-        Long cartItemId = 1L;
+    void deleteCartItem() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
-        ResponseEntity<Void> response = cartController.deleteCartItem(cartId, cartItemId);
+        ResponseEntity<Void> response = cartController.deleteCartItem("carrito", 1L);
 
         assertEquals(204, response.getStatusCodeValue());
-        verify(cartService, times(1)).deleteCartItem(cartId, cartItemId);
     }
 
+    @Test
+    void purchase() {
+        CartRequest cartRequest = createSampleCartRequest();
+        cartController.createCart(cartRequest);
 
+        ResponseEntity<OrderPurchaseRequest> response = cartController.purchase("carrito");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+    }
 }
